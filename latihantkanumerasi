@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LATIHAN SOAL TKA SD 2026 NUMERASI</title>
+    <style>
+        :root {
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --primary: #4a90e2;
+            --primary-dark: #357abd;
+            --secondary: #50e3c2;
+            --warning: #f5a623;
+            --danger: #e74c3c;
+            --success: #2ecc71;
+            --text-color: #333333;
+            --font-scale: 1rem;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-size: var(--font-scale);
+            line-height: 1.6;
+            padding: 15px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        header h1 { color: var(--primary); font-size: 1.6em; }
+        header p { font-size: 0.9em; color: #666; }
+
+        .toolbar {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 0.85em;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            background: #fff;
+            border-radius: 4px;
+        }
+
+        .screen { display: none; }
+        .screen.active { display: block; }
+
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .form-group input {
+            width: 100%; padding: 10px;
+            border: 1px solid #ccc; border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .btn {
+            background-color: var(--primary);
+            color: white; padding: 10px 20px;
+            border: none; border-radius: 6px;
+            cursor: pointer; font-size: 1rem;
+            font-weight: bold;
+        }
+        .btn:hover { background-color: var(--primary-dark); }
+        .btn-warning { background-color: var(--warning); color: #fff; }
+        .btn-danger { background-color: var(--danger); color: #fff; }
+
+        .slide-box {
+            background: #eef5fc; padding: 20px;
+            border-left: 5px solid var(--primary);
+            border-radius: 6px; margin-bottom: 15px;
+            min-height: 220px;
+        }
+        .step-card {
+            background: #ffffff;
+            border: 1px dashed #4a90e2;
+            padding: 10px 15px;
+            margin-top: 8px;
+            border-radius: 6px;
+        }
+
+        .nav-slides { display: flex; justify-content: space-between; align-items: center; }
+
+        .quiz-layout {
+            display: grid;
+            grid-template-columns: 1fr 260px;
+            gap: 20px;
+        }
+        @media(max-width: 768px) {
+            .quiz-layout { grid-template-columns: 1fr; }
+        }
+
+        .grid-nav {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+        }
+        .grid-btn {
+            padding: 8px; text-align: center;
+            border: 1px solid #ccc; background: #fff;
+            border-radius: 4px; cursor: pointer; font-weight: bold;
+        }
+        .grid-btn.answered { background: var(--primary); color: white; border-color: var(--primary); }
+        .grid-btn.doubt { background: var(--warning); color: white; border-color: var(--warning); }
+        .grid-btn.active { border: 2px solid #000; }
+        .grid-btn.error-missing { background: #f8d7da; border-color: var(--danger); }
+
+        .option-btn {
+            display: block; width: 100%; text-align: left;
+            padding: 12px; margin-bottom: 8px;
+            border: 1px solid #ddd; background: #fff;
+            border-radius: 6px; cursor: pointer;
+            font-size: 1rem;
+        }
+        .option-btn.selected { background: #d0e1fd; border-color: var(--primary); font-weight: bold; }
+
+        .popup {
+            display: none; position: fixed;
+            top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center; align-items: center;
+            z-index: 999;
+        }
+        .popup-content {
+            background: #fff; padding: 25px;
+            border-radius: 8px; text-align: center; max-width: 400px; width: 90%;
+        }
+
+        .pembahasan-item {
+            background: #f9f9f9; border: 1px solid #ddd;
+            padding: 15px; margin-bottom: 15px; border-radius: 6px;
+        }
+        .correct-ans { color: green; font-weight: bold; }
+        .wrong-ans { color: red; font-weight: bold; }
+
+        .eval-box {
+            background: #fff3cd;
+            border: 1px solid #ffeeba;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .eval-box h4 { color: #856404; margin-bottom: 8px; }
+        .eval-box ul { margin-left: 20px; color: #856404; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="toolbar">
+        <button class="btn-sm" onclick="adjustFont(0.1)">A+</button>
+        <button class="btn-sm" onclick="adjustFont(-0.1)">A-</button>
+        <button class="btn-sm" onclick="toggleFullscreen()">Layar Penuh ⛶</button>
+    </div>
+
+    <header>
+        <h1>LATIHAN SOAL TKA SD 2026 NUMERASI</h1>
+        <p>SDN Setragalih TA 2026 • Dikembangkan oleh Gunawan, S.Pd.</p>
+    </header>
+
+    <!-- TEMA 1: IDENTITAS PESERTA -->
+    <div id="screen-identitas" class="screen active">
+        <h3>Form Identitas Peserta</h3><br>
+        <form id="form-identitas" onsubmit="simpanIdentitas(event)">
+            <div class="form-group">
+                <label for="nama">Nama Lengkap:</label>
+                <input type="text" id="nama" required placeholder="Masukkan nama lengkap">
+            </div>
+            <div class="form-group">
+                <label for="tempat_lahir">Tempat Lahir:</label>
+                <input type="text" id="tempat_lahir" required placeholder="Masukkan tempat lahir">
+            </div>
+            <div class="form-group">
+                <label for="tgl_lahir">Tanggal Lahir:</label>
+                <input type="date" id="tgl_lahir" required>
+            </div>
+            <div class="form-group">
+                <label for="absen">Nomor Absen:</label>
+                <input type="number" id="absen" min="1" required placeholder="Masukkan nomor absen">
+            </div>
+            <button type="submit" class="btn">Lanjut ke Pembekalan Materi</button>
+        </form>
+    </div>
+
+    <!-- TEMA 2: MATERI & HOTS (10 SLIDE DINAMIS) -->
+    <div id="screen-materi" class="screen">
+        <h3>Pembekalan Materi & Contoh Soal HOTS</h3><br>
+        <div class="slide-box" id="slide-content"></div>
+        <div class="nav-slides">
+            <button class="btn" onclick="prevSlide()">Kembali</button>
+            <span id="slide-indicator">Slide 1 / 10</span>
+            <button class="btn" id="btn-next-slide" onclick="nextSlide()">Lanjut</button>
+        </div>
+    </div>
+
+    <!-- TEMA 3: LEMBAR EVALUASI -->
+    <div id="screen-evaluasi" class="screen">
+        <div class="quiz-layout">
+            <div>
+                <h4 id="soal-nomor">Soal 1</h4>
+                <div id="soal-teks" style="margin: 15px 0;"></div>
+                <div id="pilihan-jawaban"></div>
+                
+                <div style="margin-top:20px; display:flex; gap:10px;">
+                    <button class="btn btn-warning" onclick="toggleRagu()">🟨 Ragu-ragu</button>
+                    <button class="btn" onclick="nextSoal()">Selanjutnya</button>
+                </div>
+            </div>
+
+            <div>
+                <h4>Navigasi Soal</h4>
+                <p style="font-size:0.8em; margin-bottom:10px;">
+                    ⬜ Belum | 🟦 Sudah | 🟨 Ragu
+                </p>
+                <div class="grid-nav" id="grid-nav"></div>
+                <br>
+                <button class="btn btn-danger" style="width:100%" onclick="mintaKonfirmasiKirim()">Kirim Jawaban</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TEMA 4: DIAGNOSIS & PEMBAHASAN -->
+    <div id="screen-hasil" class="screen">
+        <h3>Rapor Skor & Diagnosis Kelemahan</h3><br>
+        <div id="rapor-skor" style="text-align:center; padding:15px; background:#e2f0d9; border-radius:8px; margin-bottom:20px;"></div>
+        
+        <!-- DIAGNOSIS KELEMAHAN PESERTA -->
+        <div id="diagnosis-box" class="eval-box"></div>
+        
+        <div id="pembahasan-container"></div>
+        <button class="btn" onclick="resetAplikasi()" style="margin-top:15px;">Ulangi Latihan</button>
+    </div>
+</div>
+
+<!-- POPUP KONFIRMASI -->
+<div class="popup" id="popup-konfirmasi">
+    <div class="popup-content">
+        <h3>Konfirmasi Pengiriman</h3>
+        <p>Apakah kamu yakin ingin menyelesaikan dan mengirim jawabanmu sekarang?</p><br>
+        <button class="btn" onclick="prosesSelesai()">Ya, Selesaikan</button>
+        <button class="btn btn-danger" onclick="tutupPopup()">Batal</button>
+    </div>
+</div>
+
+<script>
+    // --- DATA MATERI TERPERINCI (10 SLIDE) ---
+    const slidesData = [
+        { 
+            judul: "1. Pecahan, Desimal, dan Persen", 
+            isi: "<b>Konsep Dasar:</b> Mengubah bentuk angka agar mudah dihitung.<br>" +
+                 "• <b>Pecahan ke Desimal:</b> Bagi pembilang dengan penyebut. Contoh: 1/4 = 1 ÷ 4 = 0,25.<br>" +
+                 "• <b>Pecahan ke Persen:</b> Kalikan dengan 100%. Contoh: 1/4 × 100% = 25%.<br>" +
+                 "<b>Tips Anak:</b> Bayangkan 1 kue utuh (100%). Jika dibagi 4, tiap potongnilainya 25% atau 0,25."
+        },
+        { 
+            judul: "2. Skala dan Denah Lokasi", 
+            isi: "<b>Konsep Dasar:</b> Memperkecil ukuran asli ke dalam kertas peta.<br>" +
+                 "• <b>Rumus Skala:</b> Skala = Jarak Peta ÷ Jarak Sebenarnya.<br>" +
+                 "• <b>Rumus Jarak Sebenarnya:</b> Jarak Sebenarnya = Jarak Peta ÷ Skala.<br>" +
+                 "<b>Tips Penting:</b> Selalu samakan satuan ke <b>cm</b> terlebih dahulu! Ingat: 1 km = 100.000 cm."
+        },
+        { 
+            judul: "3. Geometri Gabungan Bangun Datar", 
+            isi: "<b>Konsep Dasar:</b> Menghitung luas gabungan dari beberapa bangun.<br>" +
+                 "• <b>Langkah 1:</b> Potong/potong bangun gabungan menjadi beberapa bangun sederhana (Persegi, Segitiga, dll).<br>" +
+                 "• <b>Langkah 2:</b> Hitung luas masing-masing bangun.<br>" +
+                 "• <b>Langkah 3:</b> Jumlahkan seluruh luasnya."
+        },
+        { 
+            judul: "4. Volume Bangun Ruang & Debit Air", 
+            isi: "<b>Konsep Dasar:</b> Menghitung daya tampung wadah dan kecepatan pengisian air.<br>" +
+                 "• <b>Volume Balok:</b> p × l × t | <b>Volume Kubus:</b> s × s × s.<br>" +
+                 "• <b>Konversi Air:</b> 1 Liter = 1 dm³ = 1.000 cm³.<br>" +
+                 "• <b>Debit Air:</b> Waktu pengisian = Volume total ÷ Debit."
+        },
+        { 
+            judul: "5. Statisika: Rata-rata (Mean) & Modus", 
+            isi: "<b>Konsep Dasar:</b> Menghitung nilai perwakilan dari kumpulan data.<br>" +
+                 "• <b>Rata-rata:</b> (Jumlah Total Seluruh Nilai) ÷ (Banyaknya Data).<br>" +
+                 "• <b>Modus:</b> Nilai yang paling sering/banyak muncul.<br>" +
+                 "<b>Trik HOTS:</b> Jika ada anak baru bergabung, kalikan rata-rata baru dengan jumlah total anak yang baru, lalu kurangi total nilai awal."
+        },
+        { 
+            judul: "6. Peluang Kejadian Sederhana", 
+            isi: "<b>Konsep Dasar:</b> Seberapa besar kemungkinan suatu kejadian terjadi.<br>" +
+                 "• <b>Rumus:</b> Peluang = (Banyaknya kejadian yang diharapkan) ÷ (Total seluruh kemungkinan).<br>" +
+                 "<b>Contoh:</b> Peluang muncul angka pada 1 koin = 1 / 2 (karena koin punya 2 sisi: Angka dan Gambar)."
+        },
+        { 
+            judul: "7. Contoh HOTS 1: Penalaran Skala Peta", 
+            isi: "<b>Soal:</b> Peta A berskala 1 : 100.000 (Jarak A-B = 4 cm). Peta B memiliki jarak A-B = 8 cm. Berapa skala Peta B?<br><br>" +
+                 "<button class='btn-sm' onclick='toggleHint(1)'>Lihat Langkah Penalaran</button>" +
+                 "<div id='hint-1' style='display:none;' class='step-card'>" +
+                 "<b>Langkah 1:</b> Cari Jarak Sebenarnya dari Peta A.<br>➔ 4 cm × 100.000 = 400.000 cm (4 km).<br>" +
+                 "<b>Langkah 2:</b> Cari Skala Peta B.<br>➔ Skala B = Jarak Peta B ÷ Jarak Sebenarnya = 8 cm ÷ 400.000 cm = 1 : 50.000.<br>" +
+                 "<b>Kesimpulan:</b> Gambar Peta B lebih besar 2 kali lipat, sehingga angkanya jadi lebih kecil separuhnya!</div>" 
+        },
+        { 
+            judul: "8. Contoh HOTS 2: Penalaran Rata-rata Gabungan", 
+            isi: "<b>Soal:</b> Rata-rata nilai 4 anak adalah 80. Jika nilai Budi masuk, rata-ratanya naik jadi 82. Berapa nilai Budi?<br><br>" +
+                 "<button class='btn-sm' onclick='toggleHint(2)'>Lihat Langkah Penalaran</button>" +
+                 "<div id='hint-2' style='display:none;' class='step-card'>" +
+                 "<b>Langkah 1:</b> Hitung total nilai awal (4 anak).<br>➔ 4 × 80 = 320.<br>" +
+                 "<b>Langkah 2:</b> Hitung total nilai baru (5 anak termasuk Budi).<br>➔ 5 × 82 = 410.<br>" +
+                 "<b>Langkah 3:</b> Cari nilai Budi.<br>➔ 410 - 320 = <b>90</b>.</div>" 
+        },
+        { 
+            judul: "9. Contoh HOTS 3: Penalaran Pecahan & Sisa Pembagian", 
+            isi: "<b>Soal:</b> Ibu punya uang Rp100.000. 2/5 bagian dibeli beras, 0,25 bagian dibeli minyak, sisanya ditabung. Berapa rupiah yang ditabung?<br><br>" +
+                 "<button class='btn-sm' onclick='toggleHint(3)'>Lihat Langkah Penalaran</button>" +
+                 "<div id='hint-3' style='display:none;' class='step-card'>" +
+                 "<b>Langkah 1:</b> Ubah semua ke rupiah atau persen.<br>➔ Beras = 2/5 × 100.000 = Rp40.000.<br>➔ Minyak = 0,25 × 100.000 = Rp25.000.<br>" +
+                 "<b>Langkah 2:</b> Hitung total belanja = Rp40.000 + Rp25.000 = Rp65.000.<br>" +
+                 "<b>Langkah 3:</b> Sisa tabungan = Rp100.000 - Rp65.000 = <b>Rp35.000</b>.</div>" 
+        },
+        { 
+            judul: "10. Tips Sukses Mengerjakan Soal HOTS", 
+            isi: "1. <b>Baca Soal 2 Kali:</b> Pahami apa yang diketahui dan apa yang ditanyakan.<br>" +
+                 "2. <b>Coret-coret Langkahnya:</b> Tuliskan rumusnya dulu baru angkanya.<br>" +
+                 "3. <b>Perhatikan Satuan:</b> Pastikan cm, m, km, liter sudah sama sebelum dihitung.<br>" +
+                 "4. <b>Manfaatkan Fitur Ragu-ragu:</b> Jika bingung, tandai ragu-ragu dan lanjut ke soal berikutnya!"
+        }
+    ];
+
+    // --- BANK 30 SOAL HOTS KATEGORISASI MATERI ---
+    const bankSoal = [
+        {
+            materi: "Pecahan, Desimal & Persen",
+            teks: "Pak Budi membagikan hasil panen beras. Sebanyak 2/5 bagian dijual, 0,25 bagian diberikan kepada tetangga, dan sisanya disimpan. Berapa persen dari seluruh panen yang disimpan Pak Budi?",
+            pilihan: ["30%", "35%", "40%", "45%"],
+            kunci: 1,
+            pembahasan: "Total panen = 100%. Dijual = 2/5 = 40%. Tetangga = 0,25 = 25%. Disimpan = 100% - (40% + 25%) = 35%."
+        },
+        {
+            materi: "Skala & Peta",
+            teks: "Jarak kota A ke kota B pada peta berskala 1 : 200.000 adalah 6 cm. Sebuah mobil berangkat pukul 08.00 dengan kecepatan rata-rata 40 km/jam. Pukul berapa mobil tiba di kota B?",
+            pilihan: ["Pukul 08.18", "Pukul 08.30", "Pukul 08.45", "Pukul 09.00"],
+            kunci: 0,
+            pembahasan: "Jarak sebenarnya = 6 cm × 200.000 = 12 km. Waktu = 12 km / 40 km/jam = 0,3 jam = 18 menit. Tiba pukul 08.00 + 18 menit = 08.18."
+        },
+        {
+            materi: "Volume Air & Bangun Ruang",
+            teks: "Sebuah kolam renang berbentuk balok berukuran panjang 10 m, lebar 6 m, dan dalam 1,5 m. Kolam terisi air 2/3 bagian. Berapa liter air yang dibutuhkan untuk mengisi kolam hingga penuh?",
+            pilihan: ["30.000 liter", "60.000 liter", "90.000 liter", "120.000 liter"],
+            kunci: 0,
+            pembahasan: "Volume total = 10 × 6 × 1,5 = 90 m³ = 90.000 liter. Bagian kosong = 1 - 2/3 = 1/3 bagian. Air yang dibutuhkan = 1/3 × 90.000 = 30.000 liter."
+        },
+        {
+            materi: "Statistika & Rata-rata",
+            teks: "Rata-rata nilai ulangan Matematika dari 19 siswa adalah 78. Jika nilai Ani digabungkan, rata-rata nilainya menjadi 79. Berapakah nilai Ani?",
+            pilihan: ["88", "90", "94", "98"],
+            kunci: 3,
+            pembahasan: "Total 19 siswa = 19 × 78 = 1.482. Total 20 siswa = 20 × 79 = 1.580. Nilai Ani = 1.580 - 1.482 = 98."
+        },
+        {
+            materi: "Peluang Kejadian",
+            teks: "Sebuah dadu dilemparkan satu kali. Peluang munculnya mata dadu bernilai bilangan prima adalah...",
+            pilihan: ["1/6", "1/3", "1/2", "2/3"],
+            kunci: 2,
+            pembahasan: "Mata dadu prima = {2, 3, 5} (ada 3). Total kemungkinan = {1, 2, 3, 4, 5, 6} (ada 6). Peluang = 3/6 = 1/2."
+        },
+        {
+            materi: "Pecahan, Desimal & Persen",
+            teks: "Ibu membeli 2,5 kg tepung terigu. Sebanyak 40% digunakan untuk membuat kue kering dan 0,75 kg untuk kue basah. Berapa kg sisa tepung terigu Ibu?",
+            pilihan: ["0,5 kg", "0,75 kg", "1,0 kg", "1,25 kg"],
+            kunci: 0,
+            pembahasan: "Kue kering = 40% × 2,5 kg = 1,0 kg. Kue basah = 0,75 kg. Total terpakai = 1,0 + 0,75 = 1,75 kg. Sisa = 2,5 - 1,75 = 0,5 kg."
+        },
+        {
+            materi: "Skala & Peta",
+            teks: "Denah kebun Pak Rahmad berbentuk persegi panjang berukuran 8 cm × 5 cm dengan skala 1 : 500. Berapakah luas kebun Pak Rahmad sebenarnya?",
+            pilihan: ["400 m²", "1.000 m²", "2.000 m²", "4.000 m²"],
+            kunci: 1,
+            pembahasan: "Panjang sebenarnya = 8 cm × 500 = 40 m. Lebar sebenarnya = 5 cm × 500 = 25 m. Luas sebenarnya = 40 m × 25 m = 1.000 m²."
+        },
+        {
+            materi: "Volume Air & Bangun Ruang",
+            teks: "Sebuah akuarium kubus memiliki panjang rusuk 50 cm terisi air penuh. Karena bocor, tinggi air berkurang 10 cm. Berapa liter air yang terbuang?",
+            pilihan: ["25 liter", "50 liter", "75 liter", "125 liter"],
+            kunci: 0,
+            pembahasan: "Volume terbuang = p × l × tinggi berkurang = 50 cm × 50 cm × 10 cm = 25.000 cm³ = 25 liter."
+        },
+        {
+            materi: "Statistika & Rata-rata",
+            teks: "Nilai rata-rata Matematika 5 siswa adalah 85. Nilai tertinggi 95 dan terendah 70. Berapa rata-rata nilai dari 3 siswa sisanya?",
+            pilihan: ["80", "85", "86,6", "88"],
+            kunci: 2,
+            pembahasan: "Total nilai 5 siswa = 5 × 85 = 425. Sisa total 3 siswa = 425 - (95 + 70) = 425 - 165 = 260. Rata-rata 3 siswa = 260 / 3 = 86,67."
+        },
+        {
+            materi: "Peluang Kejadian",
+            teks: "Dalam sebuah kantong terdapat 5 kelereng merah, 3 kelereng biru, dan 2 kelereng kuning. Jika diambil satu kelereng secara acak, peluang terambil kelereng bukan biru adalah...",
+            pilihan: ["3/10", "5/10", "7/10", "8/10"],
+            kunci: 2,
+            pembahasan: "Total kelereng = 5 + 3 + 2 = 10. Kelereng bukan biru = 5 merah + 2 kuning = 7. Peluang = 7/10."
+        },
+        {
+            materi: "Pecahan, Desimal & Persen",
+            teks: "Toko 'Pintar' memberikan diskon 20% untuk semua buku. Jika Rian membayar Rp48.000,00 setelah diskon, berapa harga buku sebelum diskon?",
+            pilihan: ["Rp58.000,00", "Rp60.000,00", "Rp64.000,00", "Rp70.000,00"],
+            kunci: 1,
+            pembahasan: "Persentase bayar = 100% - 20% = 80%. Harga awal = Rp48.000 / 0,8 = Rp60.000,00."
+        },
+        {
+            materi: "Skala & Peta",
+            teks: "Jarak kota P dan Q sebenarnya 150 km. Jika digambar pada peta dengan skala 1 : 1.500.000, berapa jarak kedua kota pada peta?",
+            pilihan: ["1 cm", "10 cm", "15 cm", "100 cm"],
+            kunci: 1,
+            pembahasan: "Jarak peta = Jarak sebenarnya / Skala = 15.000.000 cm / 1.500.000 = 10 cm."
+        },
+        {
+            materi: "Geometri Gabungan",
+            teks: "Sebuah bangun datar gabungan terdiri dari persegi (sisi 10 cm) dan segitiga sama kaki di atasnya (alas 10 cm, tinggi 12 cm). Berapa luas total gabungan?",
+            pilihan: ["120 cm²", "160 cm²", "180 cm²", "220 cm²"],
+            kunci: 1,
+            pembahasan: "Luas persegi = 10 × 10 = 100 cm². Luas segitiga = (10 × 12) / 2 = 60 cm². Luas total = 100 + 60 = 160 cm²."
+        },
+        {
+            materi: "Volume Air & Bangun Ruang",
+            teks: "Sebuah bak mandi terisi 180 liter air. Air dikeluarkan melalui kran dengan debit 15 liter/menit. Berapa menit waktu yang dibutuhkan hingga bak kosong?",
+            pilihan: ["10 menit", "12 menit", "15 menit", "18 menit"],
+            kunci: 1,
+            pembahasan: "Waktu = Volume / Debit = 180 / 15 = 12 menit."
+        },
+        {
+            materi: "Statistika & Rata-rata",
+            teks: "Data nilai IPA: 7, 8, 6, 9, 8, 7, 10, 9. Selisih nilai tertinggi dan rata-rata data tersebut adalah...",
+            pilihan: ["1,875", "2,0", "2,125", "2,25"],
+            kunci: 1,
+            pembahasan: "Total = 64 / 8 = 8. Nilai tertinggi = 10. Selisih = 10 - 8 = 2,0."
+        },
+        {
+            materi: "Peluang Kejadian",
+            teks: "Dua buah dadu dilempar bersamaan. Peluang muncul jumlah kedua mata dadu sama dengan 12 adalah...",
+            pilihan: ["1/36", "2/36", "3/36", "6/36"],
+            kunci: 0,
+            pembahasan: "Jumlah 12 hanya diperoleh dari pasangan (6,6) -> 1 pasangan. Total sampel 2 dadu = 36. Peluang = 1/36."
+        },
+        {
+            materi: "Pecahan, Desimal & Persen",
+            teks: "Siti memiliki tali sepanjang 3 1/2 meter. Ia memotongnya menjadi 5 bagian sama panjang. Berapa cm panjang setiap potongan tali?",
+            pilihan: ["60 cm", "70 cm", "75 cm", "80 cm"],
+            kunci: 1,
+            pembahasan: "3 1/2 m = 3,5 m = 350 cm. Panjang tiap potongan = 350 / 5 = 70 cm."
+        },
+        {
+            materi: "Skala & Peta",
+            teks: "Jarak dua kota pada peta 5 cm. Jika skala peta 1 : 3.000.000, berapa km jarak sebenarnya?",
+            pilihan: ["15 km", "150 km", "1.500 km", "15.000 km"],
+            kunci: 1,
+            pembahasan: "Jarak sebenarnya = 5 cm × 3.000.000 = 15.000.000 cm = 150 km."
+        },
+        {
+            materi: "Geometri Gabungan",
+            teks: "Lantai kamar berukuran 4 m × 3 m akan dipasang ubin persegi berukuran 20 cm × 20 cm. Berapa jumlah ubin minimum yang dibutuhkan?",
+            pilihan: ["200 ubin", "300 ubin", "400 ubin", "500 ubin"],
+            kunci: 1,
+            pembahasan: "Luas lantai = 400 cm × 300 cm = 120.000 cm². Luas ubin = 20 cm × 20 cm = 400 cm². Ubin dibutuhkan = 120.000 / 400 = 300 ubin."
+        },
+        {
+            materi: "Volume Air & Bangun Ruang",
+            teks: "Sebuah tempat air berbentuk tabung dengan diameter alas 14 cm dan tinggi 20 cm terisi air penuh. Berapa volume airnya?",
+            pilihan: ["3.080 cm³", "1.540 cm³", "6.160 cm³", "770 cm³"],
+            kunci: 0,
+            pembahasan: "Jari-jari (r) = 7 cm. Volume = (22/7) × 7 × 7 × 20 = 3.080 cm³."
+        },
+        {
+            materi: "Statistika & Rata-rata",
+            teks: "Tabel nilai matematika: Nilai 6 (3 anak), 7 (5 anak), 8 (7 anak), 9 (4 anak), 10 (1 anak). Modus data tersebut adalah...",
+            pilihan: ["7", "8", "9", "10"],
+            kunci: 1,
+            pembahasan: "Modus adalah nilai dengan frekuensi terbanyak. Nilai 8 muncul terbanyak yaitu 7 anak."
+        },
+        {
+            materi: "Peluang Kejadian",
+            teks: "Sebuah koin dilempar 50 kali. Muncul angka sebanyak 28 kali. Frekuensi relatif muncul gambar adalah...",
+            pilihan: ["22/50", "28/50", "50/22", "50/28"],
+            kunci: 0,
+            pembahasan: "Banyak muncul gambar = 50 - 28 = 22 kali. Frekuensi relatif = 22/50."
+        },
+        {
+            materi: "Pecahan, Desimal & Persen",
+            teks: "Hasil dari 0,75 + 1/2 - 35% dalam bentuk desimal adalah...",
+            pilihan: ["0,80", "0,85", "0,90", "0,95"],
+            kunci: 2,
+            pembahasan: "0,75 + 0,50 - 0,35 = 0,90."
+        },
+        {
+            materi: "Pecahan, Desimal & Persen",
+            teks: "Suhu udara di kota A -4°C, sedangkan suhu kota B 28°C. Selisih suhu kedua kota adalah...",
+            pilihan: ["24°C", "28°C", "32°C", "36°C"],
+            kunci: 2,
+            pembahasan: "Selisih = 28 - (-4) = 28 + 4 = 32°C."
+        },
+        {
+            materi: "Geometri Gabungan",
+            teks: "Sebuah lapangan berbentuk lingkaran dengan keliling 88 m. Berapa panjang jari-jari lapangan tersebut?",
+            pilihan: ["7 m", "14 m", "21 m", "28 m"],
+            kunci: 1,
+            pembahasan: "Keliling = 2 × (22/7) × r => 88 = (44/7) × r => r = 88 × 7 / 44 = 14 m."
+        },
+        {
+            materi: "Volume Air & Bangun Ruang",
+            teks: "Sebuah limas segiempat alasnya berbentuk persegi dengan panjang sisi 6 cm dan tinggi limas 10 cm. Berapa volume limas?",
+            pilihan: ["60 cm³", "120 cm³", "180 cm³", "360 cm³"],
+            kunci: 1,
+            pembahasan: "Volume Limas = 1/3 × Luas Alas × tinggi = 1/3 × (6 × 6) × 10 = 120 cm³."
+        },
+        {
+            materi: "Statistika & Rata-rata",
+            teks: "Nilai rata-rata kelompok A (10 siswa) adalah 75, rata-rata kelompok B (15 siswa) adalah 80. Rata-rata gabungan kedua kelompok adalah...",
+            pilihan: ["77,0", "77,5", "78,0", "78,5"],
+            kunci: 2,
+            pembahasan: "Total A = 10 × 75 = 750. Total B = 15 × 80 = 1200. Total gabungan = 1950 / 25 siswa = 78,0."
+        },
+        {
+            materi: "Peluang Kejadian",
+            teks: "Kotak memuat huruf S-U-K-S-E-S. Diambil 1 huruf secara acak. Peluang terambil huruf 'S' adalah...",
+            pilihan: ["1/6", "2/6", "3/6", "4/6"],
+            kunci: 2,
+            pembahasan: "Huruf 'S' ada 3 dari total 6 huruf. Peluang = 3/6 = 1/2."
+        },
+        {
+            materi: "Pecahan, Desimal & Persen",
+            teks: "Pak Andi menabung Rp1.000.000,00 di bank dengan bunga tunggal 6% per tahun. Berapa total tabungan Pak Andi setelah 8 bulan?",
+            pilihan: ["Rp1.040.000,00", "Rp1.048.000,00", "Rp1.060.000,00", "Rp1.080.000,00"],
+            kunci: 0,
+            pembahasan: "Bunga = 8/12 × 6% × 1.000.000 = Rp40.000. Total = Rp1.040.000,00."
+        },
+        {
+            materi: "Volume Air & Bangun Ruang",
+            teks: "Sebuah selang mengalirkan air 60 liter dalam waktu 3 menit. Berapa debit air selang tersebut dalam liter/jam?",
+            pilihan: ["600 liter/jam", "1.200 liter/jam", "1.800 liter/jam", "2.400 liter/jam"],
+            kunci: 1,
+            pembahasan: "Debit per menit = 60 / 3 = 20 liter/menit. Dalam 1 jam (60 menit) = 20 × 60 = 1.200 liter/jam."
+        }
+    ];
+
+    // --- STATE APLIKASI ---
+    let currentSlide = 0;
+    let currentSoal = 0;
+    let jawabanSiswa = Array(30).fill(null);
+    let statusRagu = Array(30).fill(false);
+    let dataSiswa = {};
+
+    // --- AKSESIBILITAS ---
+    let currentScale = 1.0;
+    function adjustFont(val) {
+        currentScale += val;
+        document.documentElement.style.setProperty('--font-scale', currentScale + 'rem');
+    }
+    function toggleFullscreen() {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen();
+        } else {
+            if (document.exitFullscreen) document.exitFullscreen();
+        }
+    }
+
+    // --- TEMA 1 & STORAGE ---
+    function simpanIdentitas(e) {
+        e.preventDefault();
+        dataSiswa = {
+            nama: document.getElementById('nama').value,
+            tl: document.getElementById('tempat_lahir').value,
+            tgl: document.getElementById('tgl_lahir').value,
+            absen: document.getElementById('absen').value
+        };
+        localStorage.setItem('tka_siswa', JSON.stringify(dataSiswa));
+        switchScreen('screen-materi');
+        renderSlide();
+    }
+
+    function loadLocalStorage() {
+        const saved = localStorage.getItem('tka_siswa');
+        if (saved) {
+            dataSiswa = JSON.parse(saved);
+            document.getElementById('nama').value = dataSiswa.nama || '';
+            document.getElementById('tempat_lahir').value = dataSiswa.tl || '';
+            document.getElementById('tgl_lahir').value = dataSiswa.tgl || '';
+            document.getElementById('absen').value = dataSiswa.absen || '';
+        }
+        const savedJwb = localStorage.getItem('tka_jawaban');
+        if (savedJwb) jawabanSiswa = JSON.parse(savedJwb);
+        const savedRagu = localStorage.getItem('tka_ragu');
+        if (savedRagu) statusRagu = JSON.parse(savedRagu);
+    }
+
+    function switchScreen(id) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    }
+
+    // --- TEMA 2: MATERI SLIDE ---
+    function renderSlide() {
+        const d = slidesData[currentSlide];
+        document.getElementById('slide-content').innerHTML = `<h3>${d.judul}</h3><br><p>${d.isi}</p>`;
+        document.getElementById('slide-indicator').innerText = `Slide ${currentSlide + 1} / ${slidesData.length}`;
+        document.getElementById('btn-next-slide').innerText = (currentSlide === slidesData.length - 1) ? "Mulai Evaluasi" : "Lanjut";
+    }
+    function nextSlide() {
+        if (currentSlide < slidesData.length - 1) {
+            currentSlide++;
+            renderSlide();
+        } else {
+            switchScreen('screen-evaluasi');
+            initEvaluasi();
+        }
+    }
+    function prevSlide() {
+        if (currentSlide > 0) { currentSlide--; renderSlide(); }
+    }
+    function toggleHint(id) {
+        const el = document.getElementById('hint-' + id);
+        el.style.display = el.style.display === 'none' ? 'block' : 'none';
+    }
+
+    // --- TEMA 3: EVALUASI ---
+    function initEvaluasi() {
+        renderGrid();
+        loadSoal(currentSoal);
+    }
+
+    function renderGrid() {
+        const container = document.getElementById('grid-nav');
+        container.innerHTML = '';
+        for (let i = 0; i < 30; i++) {
+            const btn = document.createElement('button');
+            btn.className = 'grid-btn';
+            btn.innerText = i + 1;
+            btn.id = `grid-btn-${i}`;
+
+            if (i === currentSoal) btn.classList.add('active');
+            if (statusRagu[i]) btn.classList.add('doubt');
+            else if (jawabanSiswa[i] !== null) btn.classList.add('answered');
+
+            btn.onclick = () => { currentSoal = i; loadSoal(i); };
+            container.appendChild(btn);
+        }
+    }
+
+    function loadSoal(index) {
+        currentSoal = index;
+        const q = bankSoal[index];
+        document.getElementById('soal-nomor').innerText = `Soal No. ${index + 1} (${q.materi})`;
+        document.getElementById('soal-teks').innerText = q.teks;
+
+        const optionsDiv = document.getElementById('pilihan-jawaban');
+        optionsDiv.innerHTML = '';
+
+        q.pilihan.forEach((opt, optIdx) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn' + (jawabanSiswa[index] === optIdx ? ' selected' : '');
+            btn.innerText = `${String.fromCharCode(65 + optIdx)}. ${opt}`;
+            btn.onclick = () => pilihJawaban(optIdx);
+            optionsDiv.appendChild(btn);
+        });
+
+        renderGrid();
+    }
+
+    function pilihJawaban(optIdx) {
+        jawabanSiswa[currentSoal] = optIdx;
+        localStorage.setItem('tka_jawaban', JSON.stringify(jawabanSiswa));
+        loadSoal(currentSoal);
+    }
+
+    function toggleRagu() {
+        statusRagu[currentSoal] = !statusRagu[currentSoal];
+        localStorage.setItem('tka_ragu', JSON.stringify(statusRagu));
+        renderGrid();
+    }
+
+    function nextSoal() {
+        if (currentSoal < 29) {
+            currentSoal++;
+            loadSoal(currentSoal);
+        }
+    }
+
+    function mintaKonfirmasiKirim() {
+        let adaKosong = false;
+        for (let i = 0; i < 30; i++) {
+            const btn = document.getElementById(`grid-btn-${i}`);
+            btn.classList.remove('error-missing');
+            if (jawabanSiswa[i] === null) {
+                btn.classList.add('error-missing');
+                adaKosong = true;
+            }
+        }
+
+        if (adaKosong) {
+            alert("Masih ada soal yang belum dijawab! Perhatikan nomor berwarna merah pada Papan Navigasi.");
+            return;
+        }
+
+        document.getElementById('popup-konfirmasi').style.display = 'flex';
+    }
+
+    function tutupPopup() {
+        document.getElementById('popup-konfirmasi').style.display = 'none';
+    }
+
+    // --- TEMA 4: DIAGNOSIS KELEMAHAN & HASIL ---
+    function prosesSelesai() {
+        tutupPopup();
+        switchScreen('screen-hasil');
+
+        let benar = 0;
+        let analisisMateri = {};
+
+        bankSoal.forEach((q, idx) => {
+            if (!analisisMateri[q.materi]) {
+                analisisMateri[q.materi] = { total: 0, salah: 0 };
+            }
+            analisisMateri[q.materi].total++;
+
+            if (jawabanSiswa[idx] === q.kunci) {
+                benar++;
+            } else {
+                analisisMateri[q.materi].salah++;
+            }
+        });
+
+        let skor = Math.round((benar / 30) * 100);
+        let pesan = "";
+        if (skor >= 85) pesan = "Luar biasa! Pemahaman konsep HOTS Numerasi kamu sudah sangat matang!";
+        else if (skor >= 70) pesan = "Bagus sekali! Terus tingkatkan ketelitian dalam berhitung.";
+        else pesan = "Jangan berkecil hati! Pelajari kembali pembahasan di bawah untuk memperkuat konsepmu.";
+
+        document.getElementById('rapor-skor').innerHTML = `
+            <h2>Skor Akhir: ${skor} / 100</h2>
+            <p>Siswa: <b>${dataSiswa.nama}</b> (Absen: ${dataSiswa.absen})</p>
+            <p>Jawaban Benar: <b>${benar}</b> | Salah: <b>${30 - benar}</b></p>
+            <p style="margin-top:10px; font-style:italic; font-weight:bold; color:#2e7d32;">"${pesan}"</p>
+        `;
+
+        // DIAGNOSIS KELEMAHAN
+        let diagHtml = "<h4>🔍 Diagnosis Kelemahan & Catatan Belajar:</h4>";
+        let materiPerluPenguatan = [];
+
+        for (let mat in analisisMateri) {
+            if (analisisMateri[mat].salah > 0) {
+                materiPerluPenguatan.push(`<b>${mat}</b> (Salah ${analisisMateri[mat].salah} dari ${analisisMateri[mat].total} soal)`);
+            }
+        }
+
+        if (materiPerluPenguatan.length > 0) {
+            diagHtml += "<p>Berdasarkan hasil evaluasi, materi yang <b>perlu dikuatkan lagi</b> oleh peserta didik adalah:</p><ul>";
+            materiPerluPenguatan.forEach(item => {
+                diagHtml += `<li>${item}</li>`;
+            });
+            diagHtml += "</ul><p style='margin-top:8px; font-size:0.9em;'><i>Disarankan untuk membaca ulang Slide Pembekalan Materi pada topik-topik di atas.</i></p>";
+        } else {
+            diagHtml += "<p style='color:green;'><b>Sempurna!</b> Peserta didik tidak memiliki kelemahan signifikan pada seluruh materi yang diuji.</p>";
+        }
+
+        document.getElementById('diagnosis-box').innerHTML = diagHtml;
+
+        // PEMBAHASAN DETIL
+        const container = document.getElementById('pembahasan-container');
+        container.innerHTML = "<h3>Pembahasan Detail (Penalaran HOTS):</h3><br>";
+
+        bankSoal.forEach((q, idx) => {
+            const userAns = jawabanSiswa[idx];
+            const isCorrect = userAns === q.kunci;
+            
+            const div = document.createElement('div');
+            div.className = 'pembahasan-item';
+            div.innerHTML = `
+                <p><b>Soal No. ${idx + 1} (${q.materi})</b></p>
+                <p>${q.teks}</p>
+                <p>Jawaban Anda: <span class="${isCorrect ? 'correct-ans' : 'wrong-ans'}">
+                    ${userAns !== null ? String.fromCharCode(65 + userAns) + '. ' + q.pilihan[userAns] : 'Tidak dijawab'}
+                </span></p>
+                ${!isCorrect ? `<p>Kunci Jawaban: <span class="correct-ans">${String.fromCharCode(65 + q.kunci)}.${q.pilihan[q.kunci]}</span></p>` : ''}
+                <p style="margin-top:5px; font-size:0.9em; color:#555;"><b>Langkah Penalaran:</b> ${q.pembahasan}</p>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    function resetAplikasi() {
+        localStorage.removeItem('tka_jawaban');
+        localStorage.removeItem('tka_ragu');
+        jawabanSiswa = Array(30).fill(null);
+        statusRagu = Array(30).fill(false);
+        currentSoal = 0;
+        currentSlide = 0;
+        switchScreen('screen-identitas');
+    }
+
+    // Inisialisasi awal
+    window.onload = function() {
+        loadLocalStorage();
+    };
+</script>
+
+</body>
+</html>
