@@ -160,7 +160,12 @@
         }
         .eval-box h4 { color: #856404; margin-bottom: 8px; }
         .eval-box ul { margin-left: 20px; color: #856404; }
-        .status-msg { text-align: center; font-style: italic; margin-top: 10px; font-weight: bold; }
+
+        .sending-status {
+            font-size: 0.85em;
+            color: #666;
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
@@ -188,11 +193,9 @@
             <div class="form-group">
                 <label for="kelas">Kelas:</label>
                 <select id="kelas" required>
-                    <option value="">-- Pilih Kelas --</option>
-                    <option value="Kelas 5A">Kelas 5A</option>
-                    <option value="Kelas 5B">Kelas 5B</option>
-                    <option value="Kelas 6A">Kelas 6A</option>
-                    <option value="Kelas 6B">Kelas 6B</option>
+                    <option value="" disabled selected>-- Pilih Kelas --</option>
+                    <option value="6A">6A</option>
+                    <option value="6B">6B</option>
                 </select>
             </div>
             <div class="form-group">
@@ -253,8 +256,6 @@
         <h3>Rapor Skor & Diagnosis Kelemahan</h3><br>
         <div id="rapor-skor" style="text-align:center; padding:15px; background:#e2f0d9; border-radius:8px; margin-bottom:20px;"></div>
         
-        <div id="status-sheet" class="status-msg"></div><br>
-
         <!-- DIAGNOSIS KELEMAHAN PESERTA -->
         <div id="diagnosis-box" class="eval-box"></div>
         
@@ -274,8 +275,8 @@
 </div>
 
 <script>
-    // --- KONFIGURASI GOOGLE APPS SCRIPT ---
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzjSpo6OYPP5a7v7bOaU4LUn1PqOKAiGVBmnuX1TREADDDsaW6FsCJdRx-vEGvkRHKJ0Q/exec";
+    // --- INTEGRASI GOOGLE APPS SCRIPT ---
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzjSpo6OYPP5a7v7bOaU4LUn1PqOKAiGVBmnuX1TREADDDsaW6FsCJdRx-vEGvkRHKJ0Q/exec";
 
     // --- DATA MATERI TERPERINCI (10 SLIDE) ---
     const slidesData = [
@@ -397,8 +398,8 @@
             materi: "Pecahan, Desimal & Persen",
             teks: "Ibu membeli 2,5 kg tepung terigu. Sebanyak 40% digunakan untuk membuat kue kering dan 0,75 kg untuk kue basah. Berapa kg sisa tepung terigu Ibu?",
             pilihan: ["0,5 kg", "0,75 kg", "1,0 kg", "1,25 kg"],
-            kunci: 0,
-            pembahasan: "Kue kering = 40% × 2,5 kg = 1,0 kg. Kue basah = 0,75 kg. Total terpakai = 1,0 + 0,75 = 1,75 kg. Sisa = 2,5 - 1,75 = 0,5 kg."
+            kunci: 1, // KOREKSI: Jawaban benar adalah B (0,75 kg)
+            pembahasan: "Kue kering = 40% × 2,5 kg = 1,0 kg. Kue basah = 0,75 kg. Total terpakai = 1,0 + 0,75 = 1,75 kg. Sisa = 2,5 - 1,75 = 0,75 kg."
         },
         {
             materi: "Skala & Peta",
@@ -737,6 +738,40 @@
         document.getElementById('popup-konfirmasi').style.display = 'none';
     }
 
+    // --- FUNGSI KIRIM DATA KE GOOGLE SHEET ---
+    function kirimDataKeGoogleSheet(skor, benar, salah) {
+        if (!GOOGLE_SCRIPT_URL) {
+            console.log("URL Google Apps Script belum diisi.");
+            return;
+        }
+
+        const payload = {
+            nama: dataSiswa.nama,
+            kelas: dataSiswa.kelas,
+            tempat_lahir: dataSiswa.tl,
+            tgl_lahir: dataSiswa.tgl,
+            absen: dataSiswa.absen,
+            skor: skor,
+            benar: benar,
+            salah: salah,
+            waktu: new Date().toLocaleString("id-ID")
+        };
+
+        fetch(GOOGLE_SCRIPT_URL, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        }).then(() => {
+            const statusEl = document.getElementById('status-kirim');
+            if (statusEl) statusEl.innerText = "✓ Data nilai berhasil dikirim ke Google Sheet.";
+        }).catch(err => {
+            console.error("Gagal mengirim data:", err);
+            const statusEl = document.getElementById('status-kirim');
+            if (statusEl) statusEl.innerText = "⚠ Gagal mengirim data ke Google Sheet.";
+        });
+    }
+
     // --- TEMA 4: DIAGNOSIS KELEMAHAN & HASIL ---
     function prosesSelesai() {
         tutupPopup();
@@ -766,13 +801,14 @@
 
         document.getElementById('rapor-skor').innerHTML = `
             <h2>Skor Akhir: ${skor} / 100</h2>
-            <p>Siswa: <b>${dataSiswa.nama}</b> (${dataSiswa.kelas || 'Siswa'}) - Absen: ${dataSiswa.absen}</p>
+            <p>Siswa: <b>${dataSiswa.nama}</b> (Kelas: <b>${dataSiswa.kelas}</b> | Absen: ${dataSiswa.absen})</p>
             <p>Jawaban Benar: <b>${benar}</b> | Salah: <b>${30 - benar}</b></p>
             <p style="margin-top:10px; font-style:italic; font-weight:bold; color:#2e7d32;">"${pesan}"</p>
+            <div id="status-kirim" class="sending-status">Mengirim data nilai ke server...</div>
         `;
 
-        // KIRIM DATA KE GOOGLE SHEETS
-        kirimKeGoogleSheets(skor);
+        // Panggil pengiriman data otomatis ke Google Sheet
+        kirimDataKeGoogleSheet(skor, benar, 30 - benar);
 
         // DIAGNOSIS KELEMAHAN
         let diagHtml = "<h4>🔍 Diagnosis Kelemahan & Catatan Belajar:</h4>";
@@ -816,34 +852,6 @@
                 <p style="margin-top:5px; font-size:0.9em; color:#555;"><b>Langkah Penalaran:</b> ${q.pembahasan}</p>
             `;
             container.appendChild(div);
-        });
-    }
-
-    function kirimKeGoogleSheets(skor) {
-        const statusEl = document.getElementById('status-sheet');
-        statusEl.innerText = "⏳ Mengirim nilai ke Google Sheets...";
-        statusEl.style.color = "#d97706";
-
-        const payload = {
-            nama: dataSiswa.nama,
-            kelas: dataSiswa.kelas || "Kelas 5",
-            skor: skor
-        };
-
-        fetch(WEB_APP_URL, {
-            method: "POST",
-            mode: "no-cors",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-        })
-        .then(() => {
-            statusEl.innerText = "✅ Nilai berhasil tersimpan otomatis di Google Sheets!";
-            statusEl.style.color = "green";
-        })
-        .catch(err => {
-            console.error(err);
-            statusEl.innerText = "⚠️ Gagal mengirim data ke Google Sheets.";
-            statusEl.style.color = "red";
         });
     }
 
